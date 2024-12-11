@@ -1,0 +1,164 @@
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #fdeef2; /* Light pink */
+    margin: 0;
+    text-align: center;
+}
+.back-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+    color:  #ff5dae;
+    background-color: #f8cddb; /* Light pink */
+    border: 2px solid #ff85c2;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    z-index: 1000; /* Ensure it stays on top of other elements */
+}
+
+.back-button:hover {
+    background-color: #ff8cc5;
+    color: #fff;
+}
+
+.header {
+    background-color:  #ff97bf;
+    padding: 20px;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffeaf4;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 30px;
+    margin: 20px;
+}
+.avatar-layers {
+    position: relative;
+    width: 350px; /* Match the size of your avatar images */
+    height: auto;
+}
+
+.avatar-layer {
+    position: absolute;
+    top: 0; /* Keep it aligned at the top */
+    left: 40%; /* Adjust this value to move images to the right */
+    width: 100%; /* Keep images sized proportionally */
+    height: auto; /* Maintain aspect ratio */
+}
+.avatar-layer.shoes {
+    z-index: 1; /* Always at the bottom */
+}
+
+.avatar-layer.shirts {
+    z-index: 2; /* Above shoes */
+}
+
+.avatar-layer.pants {
+    z-index: 3; /* Above shirts */
+}
+
+.avatar-layer.dresses {
+    z-index: 4; /* Always on top */
+}
+.avatar-layer.additionals {
+    z-index: 5; /* Always on top */
+}
+
+
+.avatar-layers img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 1; /* Ensure the layers stack correctly */
+}
+#baseImage {
+    z-index: 0; /* Base image is at the bottom */
+}
+
+
+.side-images {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.side-images img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    background-color:  #ffa7c8;
+    border: 3px solid #f873b6;
+    cursor: pointer;
+    
+}
+
+.avatar-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.avatar-main {
+    width: 350px;
+    height: auto;
+    border: 5px solid #f873b6;
+    background-color:  #ff97bf;
+    border-radius: 15px;
+}
+
+.popup {
+    position: absolute;
+    display: none;
+    background-color: #ffcae3; /* Light ivory */
+    border: 3px solid #f873b6;
+    border-radius: 15px;
+    padding: 10px;
+    max-width: 200px;
+    z-index: 10;
+    top: 30%;
+    transform:translateY(-25%);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 5px;
+}
+
+.popup img {
+    width: 45%; /* Adjust width to fit the popup */
+    height: auto; /* Maintain aspect ratio */
+    margin: 5px;
+    background-color: #ffebf4; /* Light ivory */
+    border: 3px solid #f873b6;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.popup .close {
+    font-size: 1.5em;
+    color: #f873b6;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.footer {
+    margin-top: 15%;
+    font-size: 1em;
+    color: #f58ec1;
+}

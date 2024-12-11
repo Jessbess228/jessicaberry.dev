@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wardrobe Dress-Up Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="outfit.js" defer></script>
+</head>
+<body>
+    <div class="header">
+        🌸 Dress Up 🌸
+    </div>
+    <a href="index.html" class="back-button">Home</a>
+
+    <div class="container">
+        <!-- Left Side Images -->
+        <div class="side-images left">
+            <img src="assets/images/avatar2.jpg" alt="Accessories" onclick="openPopup('accessories', 'left')">
+            <img src="assets/images/avatar3.jpg" alt="Additionals" onclick="openPopup('additionals', 'left')">
+            <img src="assets/images/avatar4.jpg" alt="Shoes" onclick="openPopup('shoes', 'left')">
+        </div>
+
+        <!-- Main Avatar -->
+        <div class="avatar-container">
+            <div id="avatarLayers" class="avatar-layers">
+                <img id="baseImage" src="assets/images/Base.png" alt="Base Image" class="avatar-main">
+            </div>
+        </div>
+        
+
+        <!-- Right Side Images -->
+        <div class="side-images right">
+            <img src="assets/images/avatar5.jpg" alt="Tops" onclick="openPopup('tops', 'right')">
+            <img src="assets/images/avatar6.jpg" alt="Bottoms" onclick="openPopup('bottoms', 'right')">
+            <img src="assets/images/avatar7.jpg" alt="Dresses" onclick="openPopup('dresses', 'right')">
+        </div>
+    </div>
+
+    <!-- Left Popup Container -->
+    <div class="popup" id="leftPopup">
+        <div class="popup-header">
+            <span class="close" onclick="closePopup('left')">&times;</span>
+        </div>
+        <div id="leftPopupContent"></div>
+    </div>
+
+    <!-- Right Popup Container -->
+    <div class="popup" id="rightPopup">
+        <div class="popup-header">
+            <span class="close" onclick="closePopup('right')">&times;</span>
+        </div>
+        <div id="rightPopupContent"></div>
+    </div>
+
+    <div class="footer">
+        🌷 Enjoy dressing up your avatar in the kawaii world! 🌷
+    </div>
+</body>
+</html>
