@@ -66,6 +66,13 @@ function closePopup(side) {
 function selectItem(image) {
     const category = getCategory(image); // Determine the category of the item
     const layerId = `${category}-layer`; // Use the category as a unique ID for the layer
+    const existingLayer = document.getElementById(layerId); // Check if the layer already exists
+
+    if (existingLayer) {
+        // If the layer exists, remove it (toggle off)
+        existingLayer.remove();
+        return; // Exit the function
+    }
 
     // Check for mutual exclusivity: dresses and bottoms cannot coexist
     if (category === 'dresses') {
@@ -80,20 +87,14 @@ function selectItem(image) {
         }
     }
 
-    // Check if a layer of the same type already exists
-    const existingLayer = document.getElementById(layerId);
-    if (existingLayer) {
-        // If a layer of the same type exists, replace it
-        existingLayer.src = `assets/images/avatar/${image.replace('prev', '')}`;
-    } else {
-        // If no layer exists, add a new one
-        const newLayer = document.createElement('img');
-        newLayer.src = `assets/images/avatar/${image.replace('prev', '')}`;
-        newLayer.id = layerId; // Use the category ID to ensure only one layer per type
-        newLayer.className = `avatar-layer ${category}`; // Assign category class
-        document.getElementById('avatarLayers').appendChild(newLayer);
-    }
+    // Add a new layer if it doesn't already exist
+    const newLayer = document.createElement('img');
+    newLayer.src = `assets/images/avatar/${image.replace('prev', '')}`;
+    newLayer.id = layerId; // Use the category ID to ensure only one layer per type
+    newLayer.className = `avatar-layer ${category}`; // Assign category class
+    document.getElementById('avatarLayers').appendChild(newLayer);
 }
+
 
 // Helper function to determine category based on the image name
 function getCategory(image) {
@@ -109,6 +110,36 @@ function getCategory(image) {
         return 'accessories';
     }
     return ''; // Default to no category
+}
+function snapPicture() {
+    const avatarContainer = document.getElementById('avatarLayers');
+    const canvas = document.getElementById('snapshotCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Adjust canvas size to match avatar container
+    const { width, height } = avatarContainer.getBoundingClientRect();
+    canvas.width = width;
+    canvas.height = height;
+
+    // Draw each avatar layer onto the canvas
+    const layers = Array.from(avatarContainer.getElementsByTagName('img'));
+    layers.forEach((layer) => {
+        const img = new Image();
+        img.src = layer.src;
+        img.onload = () => {
+            const { x, y, width, height } = layer.getBoundingClientRect();
+            ctx.drawImage(img, x - avatarContainer.offsetLeft, y - avatarContainer.offsetTop, width, height);
+        };
+    });
+
+    // Wait for images to load and then save the canvas as an image
+    setTimeout(() => {
+        const imageUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = 'avatar_outfit.png';
+        link.click();
+    }, 500); // Adjust delay if needed for all images to load
 }
 
 

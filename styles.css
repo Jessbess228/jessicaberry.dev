@@ -156,6 +156,22 @@ body {
     margin: 0;
     padding: 0;
 }
+.snap-button {
+    margin: 20px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #f873b6;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.snap-button:hover {
+    background-color: #ff97bf;
+}
 
 .footer {
     margin-top: 15%;
