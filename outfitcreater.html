@@ -4,8 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wardrobe Dress-Up Game</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="outfit.js" defer></script>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #fdeef2; /* Light pink */
+            margin: 0;
+            text-align: center;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            color:  #ff5dae;
+            background-color: #f8cddb; /* Light pink */
+            border: 2px solid #ff85c2;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            z-index: 1000; /* Ensure it stays on top of other elements */
+        }
+
+        .back-button:hover {
+            background-color: #ff8cc5;
+            color: #fff;
+        }
+
+        .header {
+            background-color:  #ff97bf;
+            padding: 20px;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffeaf4;
+        }
+
+        .container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 30px;
+            margin: 20px;
+        }
+        .avatar-layers {
+            position: relative;
+            width: 350px; /* Match the size of your avatar images */
+            height: auto;
+        }
+
+        .avatar-layer {
+            position: absolute;
+            top: 0; /* Keep it aligned at the top */
+            left: 40%; /* Adjust this value to move images to the right */
+            width: 100%; /* Keep images sized proportionally */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .avatar-layer.shoes {
+            z-index: 1; /* Always at the bottom */
+        }
+
+        .avatar-layer.shirts {
+            z-index: 2; /* Above shoes */
+        }
+
+        .avatar-layer.pants {
+            z-index: 3; /* Above shirts */
+        }
+
+        .avatar-layer.dresses {
+            z-index: 4; /* Always on top */
+        }
+        .avatar-layer.additionals {
+            z-index: 5; /* Always on top */
+        }
+
+
+        .avatar-layers img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: 1; /* Ensure the layers stack correctly */
+        }
+        #baseImage {
+            z-index: 0; /* Base image is at the bottom */
+        }
+
+
+        .side-images {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .side-images img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            background-color:  #ffa7c8;
+            border: 3px solid #f873b6;
+            cursor: pointer;
+        }
+
+        .avatar-container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .avatar-main {
+            width: 350px;
+            height: auto;
+            border: 5px solid #f873b6;
+            background-color:  #ff97bf;
+            border-radius: 15px;
+        }
+
+        .popup {
+            position: absolute;
+            display: none;
+            background-color: #ffcae3; /* Light ivory */
+            border: 3px solid #f873b6;
+            border-radius: 15px;
+            padding: 10px;
+            max-width: 200px;
+            z-index: 10;
+            top: 30%;
+            transform:translateY(-25%);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 5px;
+        }
+
+        .popup img {
+            width: 45%; /* Adjust width to fit the popup */
+            height: auto; /* Maintain aspect ratio */
+            margin: 5px;
+            background-color: #ffebf4; /* Light ivory */
+            border: 3px solid #f873b6;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .popup .close {
+            font-size: 1.5em;
+            color: #f873b6;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+        }
+        .snap-button {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #f873b6;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .snap-button:hover {
+            background-color: #ff97bf;
+        }
+
+        .footer {
+            margin-top: 15%;
+            font-size: 1em;
+            color: #f58ec1;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -27,7 +206,6 @@
                 <img id="baseImage" src="assets/images/Base.png" alt="Base Image" class="avatar-main">
             </div>
         </div>
-        
 
         <!-- Right Side Images -->
         <div class="side-images right">
@@ -59,8 +237,155 @@
             <button class="snap-button" onclick="snapPicture()">Snap Picture 📸</button>
         </div>
         <canvas id="snapshotCanvas" style="display:none;"></canvas>
-        
+
         🌷 Enjoy dressing up your avatar in the kawaii world! 🌷
     </div>
+
+    <script>
+        // Variables for elements
+        const avatarImage = document.getElementById('avatarImage');
+        const leftPopup = document.getElementById('leftPopup');
+        const rightPopup = document.getElementById('rightPopup');
+        const leftPopupContent = document.getElementById('leftPopupContent');
+        const rightPopupContent = document.getElementById('rightPopupContent');
+
+        // State tracking for popups
+        let leftPopupVisible = false;
+        let rightPopupVisible = false;
+
+        const itemsprev = {
+            accessories: ['accessory1prev.png','accessory2prev.png','accessory3prev.png','accessory4prev.png'],
+            additionals: [ 'additional1prev.png','additional2prev.png'],
+            shoes: ['shoe1prev.png','shoe2prev.png',],
+            tops: ['top1prev.png','top2prev.png','top3prev.png','top4prev.png','top5prev.png'],
+            bottoms: ['bottom1prev.png','bottom2prev.png','bottom3prev.png','bottom4prev.png','bottom5prev.png'],
+            dresses: ['dress1prev.png','dress2prev.png', 'dress3prev.png'],
+        };
+        const itemsavatar = {
+            accessories: ['accessory1.png', 'accessory2.png','accessory3.png', 'accessory4.png'],
+            additionals: ['additional1.png','additional2.png'],
+            shoes: ['shoe1.png', 'shoe2.png'],
+            tops: ['top1.png', 'top2.png', 'top3.png', 'top4.png', 'top5.png'],
+            bottoms: ['bottom1.png','bottom2.png', 'bottom3.png', 'bottom4.png', 'bottom5.png'],
+            dresses: ['dress1.png','dress2.png','dress3.png'],
+        };
+
+        function openPopup(category, side) {
+            const content = itemsprev[category]
+                .map(image => `<img src="assets/images/preview/${image}" onclick="selectItem('${image}')">`)
+                .join('');
+
+            if (side === 'left') {
+                if (leftPopupVisible) {
+                    closePopup('left');
+                } else {
+                    leftPopupContent.innerHTML = content;
+                    leftPopup.style.display = 'block';
+                    leftPopup.style.top = '25%';
+                    leftPopup.style.left = '15%';
+                    leftPopupVisible = true;
+                }
+            } else if (side === 'right') {
+                if (rightPopupVisible) {
+                    closePopup('right');
+                } else {
+                    rightPopupContent.innerHTML = content;
+                    rightPopup.style.display = 'block';
+                    rightPopup.style.top = '25%';
+                    rightPopup.style.right = '15%';
+                    rightPopupVisible = true;
+                }
+            }
+        }
+
+        function closePopup(side) {
+            if (side === 'left') {
+                leftPopup.style.display = 'none';
+                leftPopupVisible = false; // Update state
+            } else if (side === 'right') {
+                rightPopup.style.display = 'none';
+                rightPopupVisible = false; // Update state
+            }
+        }
+
+        function selectItem(image) {
+            const category = getCategory(image); // Determine the category of the item
+            const layerId = `${category}-layer`; // Use the category as a unique ID for the layer
+            const existingLayer = document.getElementById(layerId); // Check if the layer already exists
+
+            if (existingLayer) {
+                // If the layer exists, remove it (toggle off)
+                existingLayer.remove();
+                return; // Exit the function
+            }
+
+            // Check for mutual exclusivity: dresses and bottoms cannot coexist
+            if (category === 'dresses') {
+                const bottomLayer = document.getElementById('pants-layer'); // Check if a bottom is already on
+                if (bottomLayer) {
+                    bottomLayer.remove(); // Remove the bottom layer if a dress is selected
+                }
+            } else if (category === 'pants') {
+                const dressLayer = document.getElementById('dresses-layer'); // Check if a dress is already on
+                if (dressLayer) {
+                    dressLayer.remove(); // Remove the dress layer if a bottom is selected
+                }
+            }
+
+            // Add a new layer if it doesn't already exist
+            const newLayer = document.createElement('img');
+            newLayer.src = `assets/images/avatar/${image.replace('prev', '')}`;
+            newLayer.id = layerId; // Use the category ID to ensure only one layer per type
+            newLayer.className = `avatar-layer ${category}`; // Assign category class
+            document.getElementById('avatarLayers').appendChild(newLayer);
+        }
+
+        // Helper function to determine category based on the image name
+        function getCategory(image) {
+            if (image.includes('shoes')) {
+                return 'shoes';
+            } else if (image.includes('shirt') || image.includes('top')) {
+                return 'shirts';
+            } else if (image.includes('pant') || image.includes('bottom')) {
+                return 'pants';
+            } else if (image.includes('dress')) {
+                return 'dresses';
+            } else if (image.includes('accessory')) {
+                return 'accessories';
+            }
+            return ''; // Default to no category
+        }
+
+        function snapPicture() {
+            const avatarContainer = document.getElementById('avatarLayers');
+            const canvas = document.getElementById('snapshotCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Adjust canvas size to match avatar container
+            const { width, height } = avatarContainer.getBoundingClientRect();
+            canvas.width = width;
+            canvas.height = height;
+
+            // Draw each avatar layer onto the canvas
+            const layers = Array.from(avatarContainer.getElementsByTagName('img'));
+            layers.forEach((layer) => {
+                const img = new Image();
+                img.src = layer.src;
+                img.onload = () => {
+                    const { x, y, width, height } = layer.getBoundingClientRect();
+                    ctx.drawImage(img, x - avatarContainer.offsetLeft, y - avatarContainer.offsetTop, width, height);
+                };
+            });
+
+            // Wait for images to load and then save the canvas as an image
+            setTimeout(() => {
+                const imageUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = 'avatar_outfit.png';
+                link.click();
+            }, 500); // Adjust delay if needed for all images to load
+        }
+    </script>
 </body>
 </html>
